@@ -1,33 +1,32 @@
 const Router = require('koa-router');
 
 const login = new Router();
+const UserCollection = require('../db/user')
+const ResponseParams = require('../constructor/response')
 
 login.post("/", async (ctx) => {
-    let res = ctx.request.body
-    if (
-        res.id === 'admin' &&
-        res.password === '123456'
+    const res = ctx.request.body
+    const userName = res.userName
+    const password = res.password
+    let params = null
+    if (userName === '' || userName == null) {
+        params = new ResponseParams('500', false, '用户名不能为空', {})
+        ctx.body = params;
+    }
+    else if (
+        password === '' || password == null
     ) {
-        let params = {
-            code: '200',
-            success: true,
-            msg: '登录成功',
-            data: {
-                isCorrect: true,
-                token: '2222'
-            }
-        };
+        params = new ResponseParams('500', false, '密码不能为空', {})
         ctx.body = params;
     } else {
-        let params = {
-            code: '200',
-            msg: '密码错误或用户名不存在',
-            success: true,
-            data: {
-                isCorrect: false
-            }
-        };
-        ctx.body = params;
+        const result = await UserCollection.findOne({ userName })
+        if (result.password == password) {
+            params = new ResponseParams('200', true, '登录成功', { token: 'ADS222' })
+        } else {
+            params = new ResponseParams('500', false, '密码错误或用户名不存在', {})
+        }
+
+        ctx.body = params
     }
 
 })

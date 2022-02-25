@@ -8,6 +8,6 @@ app.use(parser());
 app.use(router.routes());
 
 // 启动服务监听本地3005端口
-app.listen(3005, () => {
-    console.log('应用已经启动，http://localhost:3005');
+app.listen(3006, () => {
+    console.log('应用已经启动，http://localhost:3006');
 })

@@ -1,36 +1,31 @@
 <template>
-  <div class="login-wrapper"
-       id="app">
+  <div class="login-wrapper" id="app">
     <div class="login-container">
       <!-- 登录表单 -->
-      <el-form :model="loginForm"
-               ref="LoginFormRef"
-               :rules="loginFormRules"
-               label-width="70px"
-               class="login_form">
+      <el-form
+        :model="loginForm"
+        ref="LoginFormRef"
+        :rules="loginFormRules"
+        label-width="70px"
+        class="login_form"
+      >
         <!-- 用户名 -->
-        <el-form-item prop="username"
-                      label="用户名">
-          <el-input v-model="loginForm.username"
-                    prefix-icon="iconfont icon-user"
-                    size="mini"></el-input>
+        <el-form-item prop="userName" label="用户名">
+          <el-input v-model="loginForm.userName" prefix-icon="iconfont icon-user" size="mini"></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item prop="password"
-                      label="密码">
-          <el-input type="password"
-                    v-model="loginForm.password"
-                    prefix-icon="iconfont icon-3702mima"
-                    size="mini"></el-input>
+        <el-form-item prop="password" label="密码">
+          <el-input
+            type="password"
+            v-model="loginForm.password"
+            prefix-icon="iconfont icon-3702mima"
+            size="mini"
+          ></el-input>
         </el-form-item>
         <!-- 按钮 -->
         <div class="btns">
-          <el-button type="primary"
-                     @click="login"
-                     size="mini">登录</el-button>
-          <el-button type="info"
-                     @click="resetLoginForm"
-                     size="mini">重置</el-button>
+          <el-button type="primary" @click="login" size="mini">登录</el-button>
+          <el-button type="info" @click="resetLoginForm" size="mini">重置</el-button>
         </div>
       </el-form>
     </div>
@@ -46,12 +41,12 @@ export default {
       //数据绑定
       index: 0,
       loginForm: {
-        username: '',
+        userName: '',
         password: ''
       },
       //表单验证规则
       loginFormRules: {
-        username: [
+        userName: [
           {
             required: true,
             message: '请输入登录名',
@@ -90,22 +85,17 @@ export default {
           return
         }
         let params = {
-          id: this.loginForm.username,
+          userName: this.loginForm.userName,
           password: this.loginForm.password
         }
-        let res = await login(params)
-        if (res.code === '200' && res.success === true) {
-          let { data } = res
-          if (data.isCorrect && data.isCorrect === true) {
-            this.$message.success('登录成功')
-            window.sessionStorage.setItem('token', data.token)
-            this.$router.push('/home')
-          } else {
-            this.$message.error('密码错误或用户名不存在！')
-            return
-          }
+        const res = await login(params)
+        const { code, data, msg } = res
+        if (code && code === '200') {
+          this.$message.success('登录成功')
+          window.sessionStorage.setItem('token', data.token)
+          this.$router.push('/home')
         } else {
-          this.$message.error('登录失败，请联系管理员！')
+          this.$message.error(msg)
           return
         }
       })
